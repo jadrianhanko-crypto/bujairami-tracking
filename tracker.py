@@ -39,7 +39,7 @@ HEADERS = {
 DELAY = 2  # seconds between requests, keep it polite
 
 # product URLs look like /fn/cologne/bujairami/bujairami-hectic/extrait-de-parfum
-PRODUCT_RE = re.compile(r'href="([^"#?]*?/bujairami/(bujairami-[a-z0-9\-]+)/([a-z0-9\-]+))"', re.I)
+PRODUCT_RE = re.compile(r'((?:/[a-z]{2})?/(?:fn/)?(?:cologne|perfume|fragrances)/bujairami/(bujairami-[a-z0-9\-]+)/([a-z0-9\-]+))', re.I)
 OUT_MARKERS = re.compile(r"out of stock|sold out|notify me|currently unavailable|back in stock", re.I)
 
 
@@ -49,22 +49,26 @@ def get(url):
         raise RuntimeError(f"Bad response {r.status_code} ({len(r.text)} bytes) for {url}")
     return r.text
 
-
 def find_products():
     """Return {key: product_url} for every Bujairami product linked from the listing pages."""
     found = {}
     for url in LISTING_URLS:
         try:
             html = get(url)
-        except Exception as e:  # one listing failing shouldn't kill the run
+        except Exception as e:
             print(f"warn: {e}", file=sys.stderr)
             continue
-        print(f"DEBUG {url}: {len(html)} bytes, 'bujairami' x{html.lower().count('bujairami')}, starts: {html[:150]!r}")
-        for href, slug, kind in PRODUCT_RE.findall(html):
-            if "/es/" in href:  # skip Spanish-language duplicates
+        # product links can be stored with escaped slashes inside the page's JSON data
+        html = html.replace("\\/", "/").replace("\\u002F", "/").replace("\\u002f", "/")
+        matches = PRODUCT_RE.findall(html)
+        print(f"{url}: {len(matches)} product-link matches")
+        if not matches:
+            for m in list(re.finditer(r".{60}/bujairami/.{60}", html))[:5]:
+                print("SAMPLE:", repr(m.group(0)))
+        for path, slug, kind in matches:
+            if path.startswith("/es/"):
                 continue
-            key = f"{slug}/{kind}"
-            found.setdefault(key, href if href.startswith("http") else BASE + href)
+            found.setdefault(f"{slug.lower()}/{kind.lower()}", BASE + path)
         time.sleep(DELAY)
     return found
 
