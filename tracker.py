@@ -59,6 +59,7 @@ def find_products():
         except Exception as e:  # one listing failing shouldn't kill the run
             print(f"warn: {e}", file=sys.stderr)
             continue
+        print(f"DEBUG {url}: {len(html)} bytes, 'bujairami' x{html.lower().count('bujairami')}, starts: {html[:150]!r}")
         for href, slug, kind in PRODUCT_RE.findall(html):
             if "/es/" in href:  # skip Spanish-language duplicates
                 continue
