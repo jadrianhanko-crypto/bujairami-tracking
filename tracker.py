@@ -23,8 +23,7 @@ import requests
 BASE = "https://www.fragrancenet.com"
 # Brand listing pages to scan for product links. Add more if the brand page is paginated.
 LISTING_URLS = [
-    f"{BASE}/fn/fragrances/bujairami",
-    f"{BASE}/fn/search/Bujairami",
+    f"{BASE}/fragrances/bujairami",
 ]
 STATE_FILE = Path(__file__).with_name("state.json")
 NTFY_TOPIC = os.environ.get("NTFY_TOPIC", "")
@@ -50,26 +49,46 @@ def get(url):
     return r.text
 
 def find_products():
-    """Return {key: product_url} for every Bujairami product linked from the listing pages."""
+    """Return {key: product_url} for every Bujairami product, across all listing pages."""
     found = {}
+
+    def scan(html):
+        html = html.replace("\\/", "/").replace("\\u002F", "/").replace("\\u002f", "/")
+        new = 0
+        for path, slug, kind in PRODUCT_RE.findall(html):
+            if path.startswith("/es/"):
+                continue
+            key = f"{slug.lower()}/{kind.lower()}"
+            if key not in found:
+                found[key] = BASE + path
+                new += 1
+        return new, html
+
     for url in LISTING_URLS:
         try:
-            html = get(url)
+            new, html = scan(get(url))
         except Exception as e:
             print(f"warn: {e}", file=sys.stderr)
             continue
-        # product links can be stored with escaped slashes inside the page's JSON data
-        html = html.replace("\\/", "/").replace("\\u002F", "/").replace("\\u002f", "/")
-        matches = PRODUCT_RE.findall(html)
-        print(f"{url}: {len(matches)} product-link matches")
-        if not matches:
-            for m in list(re.finditer(r".{60}/bujairami/.{60}", html))[:5]:
-                print("SAMPLE:", repr(m.group(0)))
-        for path, slug, kind in matches:
-            if path.startswith("/es/"):
-                continue
-            found.setdefault(f"{slug.lower()}/{kind.lower()}", BASE + path)
-        time.sleep(DELAY)
+        print(f"{url} page 1: {new} products")
+
+        # work out the pagination parameter name from the page, default to 'page'
+        m = re.search(r'[?&;](page|p|pageNumber|pg)=\d+', html)
+        param = m.group(1) if m else "page"
+        print(f"pagination parameter: {param} ({'found in page' if m else 'guessed'})")
+
+        for n in range(2, 12):
+            time.sleep(DELAY)
+            sep = "&" if "?" in url else "?"
+            try:
+                new, _ = scan(get(f"{url}{sep}{param}={n}"))
+            except Exception as e:
+                print(f"warn: page {n}: {e}", file=sys.stderr)
+                break
+            print(f"{url} page {n}: {new} new products")
+            if new == 0:
+                break
+    print(f"Total found: {len(found)}")
     return found
 
 
