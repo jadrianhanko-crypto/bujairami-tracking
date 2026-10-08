@@ -16,7 +16,7 @@
     "url": "https://www.fragrancenet.com/cologne/bujairami/bujairami-agha/eau-de-parfum"
   },
   "bujairami-ahla-sabiyeh/eau-de-parfum": {
-    "in_stock": true,
+    "in_stock": false,
     "url": "https://www.fragrancenet.com/perfume/bujairami/bujairami-ahla-sabiyeh/eau-de-parfum"
   },
   "bujairami-arabian-valley/eau-de-parfum": {
@@ -200,7 +200,7 @@
     "url": "https://www.fragrancenet.com/cologne/bujairami/bujairami-madness/eau-de-parfum"
   },
   "bujairami-mafia-boss/extrait-de-parfum": {
-    "in_stock": false,
+    "in_stock": true,
     "url": "https://www.fragrancenet.com/cologne/bujairami/bujairami-mafia-boss/extrait-de-parfum"
   },
   "bujairami-midnight-booz/eau-de-parfum": {
