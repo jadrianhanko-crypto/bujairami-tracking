@@ -104,7 +104,7 @@
     "url": "https://www.fragrancenet.com/cologne/bujairami/bujairami-extra-pulse/eau-de-parfum"
   },
   "bujairami-fairy-dust/eau-de-parfum": {
-    "in_stock": true,
+    "in_stock": false,
     "url": "https://www.fragrancenet.com/perfume/bujairami/bujairami-fairy-dust/eau-de-parfum"
   },
   "bujairami-first-date/eau-de-parfum": {
@@ -190,6 +190,10 @@
   "bujairami-lychee/eau-de-parfum": {
     "in_stock": true,
     "url": "https://www.fragrancenet.com/perfume/bujairami/bujairami-lychee/eau-de-parfum"
+  },
+  "bujairami-madam/eau-de-parfum": {
+    "in_stock": true,
+    "url": "https://www.fragrancenet.com/perfume/bujairami/bujairami-madam/eau-de-parfum"
   },
   "bujairami-madness-extreme/eau-de-parfum": {
     "in_stock": false,
