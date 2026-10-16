@@ -52,7 +52,7 @@
     "url": "https://www.fragrancenet.com/fragrances/bujairami/bujairami-booz-extreme/eau-de-parfum"
   },
   "bujairami-boss-life/extrait-de-parfum": {
-    "in_stock": false,
+    "in_stock": true,
     "url": "https://www.fragrancenet.com/fragrances/bujairami/bujairami-boss-life/extrait-de-parfum"
   },
   "bujairami-breezy/eau-de-parfum": {
@@ -172,7 +172,7 @@
     "url": "https://www.fragrancenet.com/cologne/bujairami/bujairami-kingsman/extrait-de-parfum"
   },
   "bujairami-legacy/extrait-de-parfum": {
-    "in_stock": false,
+    "in_stock": true,
     "url": "https://www.fragrancenet.com/fragrances/bujairami/bujairami-legacy/extrait-de-parfum"
   },
   "bujairami-limonana/eau-de-parfum": {
